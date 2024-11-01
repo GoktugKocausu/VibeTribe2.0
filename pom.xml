@@ -16,21 +16,14 @@
     <description>VibeTribesDemo</description>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version> <!-- JDK 17 kullanıyorsunuz -->
     </properties>
 
     <dependencies>
-        <!-- Spring Web Starter -->
+        <!-- Spring Boot Web Starter -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <!-- Spring Boot Test Starter -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <!-- PostgreSQL Driver -->
@@ -40,13 +33,13 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Validate inputs directly in DTOs or Entity Classes -->
+        <!-- Spring Boot Validation Starter -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!-- lombok -->
+        <!-- Lombok for cleaner code -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -54,12 +47,40 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
 
-        <!-- JPA Starter -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-spring-boot-starter</artifactId>
+            <version>21.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-spring-security-adapter</artifactId>
+            <version>21.0.2</version>
+        </dependency>
+
+        <!-- Spring Boot Data JPA Starter (includes JPA dependencies) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+
+        <!-- Spring Boot DevTools for live reloading in development -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -67,19 +88,22 @@
         </dependency>
     </dependencies>
 
-
-
-
-
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version> <!-- Maven Compiler Plugin -->
+                <configuration>
+                    <source>17</source> <!-- JDK 17 ayarlandı -->
+                    <target>17</target>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
-
-
-
 </project>
