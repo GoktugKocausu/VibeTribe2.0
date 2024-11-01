@@ -1,8 +1,8 @@
 package com.example.vibetribesdemo.entities;
 
 import lombok.Data;
-import javax.persistence.*;
-import javax.validation.constraints.*;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
         @UniqueConstraint(columnNames = "email")
 })
 @Data
-public class User {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,6 +50,17 @@ public class User {
 
     @NotNull
     private String status;
+
+    @NotNull
+    private String sex;
+
+    @Size(max = 15, message = "Phone number must be at most 15 characters long")
+    @NotBlank(message = "Phone number is required")
+    @Pattern(
+            regexp = "^\\+[0-9]+$", // Phone number must start with '+' followed by digits
+            message = "Phone number must start with '+' and contain only digits"
+    )
+    private String phoneNumber; // Single phone number field
 
     // Define relationships here as needed, e.g., @OneToMany for events created by this user.
 }
