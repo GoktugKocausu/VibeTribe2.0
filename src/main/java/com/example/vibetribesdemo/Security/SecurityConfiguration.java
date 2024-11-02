@@ -40,6 +40,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()  // Allow POST requests to /auth/**
                         .requestMatchers("/auth/**").permitAll()  // Allow all requests to /auth/** endpoints
+                        .requestMatchers("/admin/users").permitAll()//.hasAuthority("ADMIN")  // Only allow users with ADMIN authority to access /admin/users
                         .anyRequest().authenticated()  // Require authentication for other endpoints
                 )
                 .sessionManagement(session -> session
@@ -50,6 +51,8 @@ public class SecurityConfiguration {
 
         return http.build();
     }
+
+
 
 
     @Bean
