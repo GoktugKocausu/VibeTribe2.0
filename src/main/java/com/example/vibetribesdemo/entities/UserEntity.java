@@ -3,7 +3,11 @@ package com.example.vibetribesdemo.entities;
 import lombok.Data;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -11,7 +15,7 @@ import java.time.LocalDateTime;
         @UniqueConstraint(columnNames = "email")
 })
 @Data
-public class UserEntity {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,8 +52,9 @@ public class UserEntity {
 
     private LocalDateTime lastLogin;
 
-    @NotNull
-    private String status;
+    @NotNull(message = "Status cannot be null")
+    private String status; // or set an appropriate default value
+
 
     @NotNull
     private String sex;
@@ -60,7 +65,36 @@ public class UserEntity {
             regexp = "^\\+[0-9]+$", // Phone number must start with '+' followed by digits
             message = "Phone number must start with '+' and contain only digits"
     )
-    private String phoneNumber; // Single phone number field
+    private String phoneNumber;
 
-    // Define relationships here as needed, e.g., @OneToMany for events created by this user.
+    // Implement UserDetails methods
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(); // You may need to define authorities later if required
+    }
+
+    @Override
+    public String getPassword() {
+        return passwordHash;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
