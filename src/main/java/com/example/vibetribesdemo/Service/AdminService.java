@@ -15,6 +15,10 @@ public interface AdminService {
     List<UserDto> getAllUsers();
     ResponseEntity<?> banUser(Long userId);    // Ban a user
     ResponseEntity<?> unbanUser(Long userId);  // Unban a user
+
+    ResponseEntity<?> promoteToAdmin(Long userId);
+
+    ResponseEntity<?> unpromoteToUser(Long userId);
 }
 
 

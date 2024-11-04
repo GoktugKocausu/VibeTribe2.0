@@ -5,6 +5,7 @@ import com.example.vibetribesdemo.DTOs.User.LoginRequestDto;
 import com.example.vibetribesdemo.DTOs.User.RegisterRequestDto;
 import com.example.vibetribesdemo.Repository.User.UserRepository;
 import com.example.vibetribesdemo.Service.AuthService;
+import com.example.vibetribesdemo.Utilities.Role;
 import com.example.vibetribesdemo.entities.UserEntity;
 import com.example.vibetribesdemo.Security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class AuthServiceImplementation implements AuthService {
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
     }
-
+    @Override
     public ResponseEntity<?> registerUser(RegisterRequestDto registerRequestDto) {
         UserEntity newUser = new UserEntity();
         newUser.setUsername(registerRequestDto.getUsername());
@@ -41,6 +42,10 @@ public class AuthServiceImplementation implements AuthService {
         newUser.setPhoneNumber(registerRequestDto.getPhoneNumber());
         newUser.setSex(registerRequestDto.getSex());
         newUser.setStatus(registerRequestDto.getStatus()); // Use status from DTO
+
+        newUser.setRole(Role.USER_ROLE);
+
+
         userRepository.save(newUser);
         return ResponseEntity.ok("User registered successfully");
     }

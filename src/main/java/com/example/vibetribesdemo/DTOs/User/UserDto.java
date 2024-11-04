@@ -1,6 +1,8 @@
 package com.example.vibetribesdemo.DTOs.User;
 
 import java.time.LocalDateTime;
+
+import com.example.vibetribesdemo.Utilities.Role;
 import lombok.Data;
 import com.example.vibetribesdemo.entities.UserEntity;
 
@@ -17,7 +19,7 @@ public class UserDto {
     private LocalDateTime createdAt;
     private LocalDateTime lastLogin;
     private String status;
-
+    private Role role;  // Add role here
 
 
     public UserDto(UserEntity user) {
@@ -31,6 +33,7 @@ public class UserDto {
         this.createdAt = user.getCreatedAt();
         this.lastLogin = user.getLastLogin();
         this.status = user.getStatus();
+        this.role = user.getRole();  // Set role from UserEntity
     }
 
 }
