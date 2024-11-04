@@ -40,8 +40,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()  // Allow POST requests to /auth/**
                         .requestMatchers("/auth/**").permitAll()  // Allow all requests to /auth/** endpoints
-                        .requestMatchers("/admin/users").permitAll()//.hasAuthority("ADMIN")  // Only allow users with ADMIN authority to access /admin/users
-                        .anyRequest().authenticated()  // Require authentication for other endpoints
+                        .requestMatchers("/admin/**").hasRole("ADMIN")  // Restrict /admin/** endpoints to ADMIN role
+                        .anyRequest().authenticated()  // Require authentication for all other endpoints
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

@@ -1,5 +1,6 @@
 package com.example.vibetribesdemo.entities;
 
+import com.example.vibetribesdemo.Utilities.Role;
 import lombok.Data;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -66,6 +67,12 @@ public class UserEntity implements UserDetails {
             message = "Phone number must start with '+' and contain only digits"
     )
     private String phoneNumber;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
+
 
     // Implement UserDetails methods
     @Override
