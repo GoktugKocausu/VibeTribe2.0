@@ -1,12 +1,15 @@
 package com.example.vibetribesdemo.entities;
 
 import com.example.vibetribesdemo.Utilities.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Data;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -32,7 +35,6 @@ public class UserEntity implements UserDetails {
     private String username;
 
     @NotBlank
-    @Email(message = "Email should be valid")
     @Column(unique = true, nullable = false)
     private String email;
 
@@ -60,6 +62,8 @@ public class UserEntity implements UserDetails {
     @NotNull
     private String sex;
 
+    private Integer age;
+
     @Size(max = 15, message = "Phone number must be at most 15 characters long")
     @NotBlank(message = "Phone number is required")
     @Pattern(
@@ -68,16 +72,26 @@ public class UserEntity implements UserDetails {
     )
     private String phoneNumber;
 
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 
 
     // Implement UserDetails methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(); // You may need to define authorities later if required
+    }
+    @Override
+    public String getUsername() {
+        return this.email; // Return email as username
     }
 
     @Override

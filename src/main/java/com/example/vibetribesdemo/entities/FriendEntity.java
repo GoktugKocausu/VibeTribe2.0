@@ -1,34 +1,38 @@
 package com.example.vibetribesdemo.entities;
-import lombok.Data;
+
+import com.example.vibetribesdemo.Utilities.FriendshipStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import lombok.Data;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "friends")
 @Data
+@Entity
+@Table(name = "friendships")
 public class FriendEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long friendsId; // Unique identifier for friend associations
+    private Long id;
 
-    @ManyToOne // Relationship with User
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user; // User who has friends
 
-    @ManyToOne // Relationship with User
-    @JoinColumn(name = "friend_id", nullable = false)
-    private UserEntity friend; // Friend of the user
+    private LocalDateTime createdAt;
 
-    @NotBlank
-    private String status; // Status of the friendship (e.g., pending, accepted, blocked)
+    private LocalDateTime respondedAt;
 
-    private LocalDateTime createdAt; // Timestamp when the friendship was created
+    @Enumerated(EnumType.STRING)
+    private FriendshipStatus status;
 
-    private LocalDateTime acceptedAt; // Timestamp when the friendship was accepted (if applicable)
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now(); // Set the created timestamp
+
+
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
-}
+
+
+
+    }
+

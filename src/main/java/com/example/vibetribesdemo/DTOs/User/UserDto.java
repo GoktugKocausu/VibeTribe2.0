@@ -3,6 +3,7 @@ package com.example.vibetribesdemo.DTOs.User;
 import java.time.LocalDateTime;
 
 import com.example.vibetribesdemo.Utilities.Role;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Data;
 import com.example.vibetribesdemo.entities.UserEntity;
 
@@ -19,6 +20,7 @@ public class UserDto {
     private LocalDateTime createdAt;
     private LocalDateTime lastLogin;
     private String status;
+    private Integer age;
     private Role role;  // Add role here
 
 
@@ -33,6 +35,7 @@ public class UserDto {
         this.createdAt = user.getCreatedAt();
         this.lastLogin = user.getLastLogin();
         this.status = user.getStatus();
+        this.age = user.getAge();
         this.role = user.getRole();  // Set role from UserEntity
     }
 

@@ -39,10 +39,10 @@ public class AdminController {
     public ResponseEntity<?> promoteToAdmin(@PathVariable Long userId) {
         return adminService.promoteToAdmin(userId);
     }
-
     // New endpoint to demote a user to USER_ROLE
     @GetMapping("/unpromote/{userId}")
     public ResponseEntity<?> unpromoteToUser(@PathVariable Long userId) {
         return adminService.unpromoteToUser(userId);
     }
+
 }
