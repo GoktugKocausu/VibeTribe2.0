@@ -1,6 +1,7 @@
 package com.example.vibetribesdemo.Security;
 
 import com.example.vibetribesdemo.Repository.User.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,17 +15,24 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 public class ApplicationConfiguration {
 
+
+    @Autowired
     private final UserRepository userRepository;
 
     public ApplicationConfiguration(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
+
+
+
     @Bean
     public UserDetailsService userDetailsService() {
-        return email -> userRepository.findByEmail(email)
+        return username -> userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
+
+
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -36,12 +44,16 @@ public class ApplicationConfiguration {
         return config.getAuthenticationManager();
     }
 
+
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setUserDetailsService(userDetailsService()); // Burada userDetailsService metodunu kullanıyoruz
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
+
+
 }
 

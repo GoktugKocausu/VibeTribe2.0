@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
-        final String userEmail;
+        final String username;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
@@ -49,11 +49,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt);
-        System.out.println("Extracted userEmail from JWT: " + userEmail);
+        username = jwtService.extractUsername(jwt); // Username'i JWT'den çıkarıyoruz
+        System.out.println("Extracted username from JWT: " + username);
 
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
             System.out.println("Loaded userDetails: " + userDetails);
 
             if (jwtService.isTokenValid(jwt, userDetails)) {
@@ -61,17 +61,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-                System.out.println("User authenticated: " + userEmail);
+                System.out.println("User authenticated: " + username);
             } else {
-                System.out.println("Token is invalid for user: " + userEmail);
+                System.out.println("Token is invalid for user: " + username);
             }
         } else {
-            System.out.println("User email not found or already authenticated.");
+            System.out.println("Username not found or already authenticated.");
         }
 
         filterChain.doFilter(request, response);
     }
-
-
-
 }

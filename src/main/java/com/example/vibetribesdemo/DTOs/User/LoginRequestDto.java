@@ -7,10 +7,10 @@ import lombok.Data;
 @Data
 public class LoginRequestDto {
 
-    @NotBlank
-    @Email(message = "Invalid email format.")
+
+   private String username;
     private String email;
 
-    @NotBlank
+
     private String password;
 }

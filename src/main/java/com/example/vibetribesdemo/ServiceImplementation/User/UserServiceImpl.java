@@ -28,8 +28,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity updateUserProfile(String username, UserProfileUpdateDto userProfileUpdateDto) {
-        // Find the user by email (username is the email in this case)
-        UserEntity user = userRepository.findByEmail(username)
+
+        UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         // Update profile details if provided in the DTO
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String uploadProfilePicture(String username, MultipartFile file) {
-        UserEntity user = userRepository.findByEmail(username)
+        UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         try {

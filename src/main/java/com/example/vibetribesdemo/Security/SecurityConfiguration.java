@@ -40,7 +40,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()  // Allow POST requests to /auth/**
                         .requestMatchers("/auth/**").permitAll()  // Allow all requests to /auth/** endpoints
-                        .requestMatchers("/admin/**").hasRole("ADMIN")  // Restrict /admin/** endpoints to ADMIN role
+                        .requestMatchers(HttpMethod.GET,"/admin/**").hasAuthority("ADMIN_ROLE")  // Restrict /admin/** endpoints to ADMIN_ROLE
                         .requestMatchers("/profile/**").authenticated()  // Require authentication for /profile/** endpoints
                         .anyRequest().authenticated()  // Require authentication for all other endpoints
                 )

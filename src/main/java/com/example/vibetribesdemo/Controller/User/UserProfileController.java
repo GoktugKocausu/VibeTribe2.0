@@ -29,6 +29,7 @@ public class UserProfileController {
 
 
 
+
     @PostMapping("/upload-picture")
     public ResponseEntity<String> uploadProfilePicture(
             @AuthenticationPrincipal(expression = "username") String username,
