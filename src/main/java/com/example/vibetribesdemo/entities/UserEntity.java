@@ -7,6 +7,7 @@ import lombok.Data;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class UserEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private Role role =  Role.USER_ROLE;  // Varsayılan olarak USER_ROLE ata
 
 
     @Override
@@ -87,11 +88,12 @@ public class UserEntity implements UserDetails {
     // Implement UserDetails methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(); // You may need to define authorities later if required
+        return List.of(new SimpleGrantedAuthority(  this.role.name()));
     }
+
     @Override
     public String getUsername() {
-        return this.email; // Return email as username
+        return this.username; // Return email as username
     }
 
     @Override

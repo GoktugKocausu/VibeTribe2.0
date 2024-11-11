@@ -3,6 +3,7 @@ package com.example.vibetribesdemo.ServiceImplementation;
 import com.example.vibetribesdemo.DTOs.User.RegisterRequestDto;
 import com.example.vibetribesdemo.DTOs.User.LoginRequestDto;
 import com.example.vibetribesdemo.DTOs.User.RegisterRequestDto;
+import com.example.vibetribesdemo.DTOs.User.UserDto;
 import com.example.vibetribesdemo.Repository.User.UserRepository;
 import com.example.vibetribesdemo.Service.AuthService;
 import com.example.vibetribesdemo.Utilities.Role;
@@ -25,6 +26,7 @@ public class AuthServiceImplementation implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
 
     @Autowired
     public AuthServiceImplementation(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager) {
@@ -51,10 +53,14 @@ public class AuthServiceImplementation implements AuthService {
     }
 
 
-    @Override
     public ResponseEntity<?> authenticateUser(LoginRequestDto loginRequestDto) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(), loginRequestDto.getPassword()));
-        UserEntity user = userRepository.findByEmail(loginRequestDto.getEmail())
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequestDto.getUsername(), // username alanını kullanıyoruz
+                        loginRequestDto.getPassword()
+                )
+        );
+        UserEntity user = userRepository.findByUsername(loginRequestDto.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         String token = jwtService.generateToken(user);
@@ -65,4 +71,5 @@ public class AuthServiceImplementation implements AuthService {
 
         return ResponseEntity.ok(response);
     }
+
 }
