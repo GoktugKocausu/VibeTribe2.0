@@ -1,4 +1,4 @@
-package com.example.vibetribesdemo.DTOs.User;
+package com.example.vibetribesdemo.DTOs;
 
 import java.time.LocalDateTime;
 

@@ -41,7 +41,9 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()  // Allow POST requests to /auth/**
                         .requestMatchers("/auth/**").permitAll()  // Allow all requests to /auth/** endpoints
                         .requestMatchers(HttpMethod.GET,"/admin/**").hasAuthority("ADMIN_ROLE")  // Restrict /admin/** endpoints to ADMIN_ROLE
-                        .requestMatchers("/profile/**").authenticated()  // Require authentication for /profile/** endpoints
+                        .requestMatchers("/profile/**").authenticated()
+                        .requestMatchers("/api/**").permitAll()
+                       // Require authentication for /profile/** endpoints
                         .anyRequest().authenticated()  // Require authentication for all other endpoints
                 )
                 .sessionManagement(session -> session
@@ -56,7 +58,7 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("http://localhost:8080"));
+
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
 

@@ -1,6 +1,6 @@
 package com.example.vibetribesdemo.Controller;
 
-import com.example.vibetribesdemo.DTOs.User.UserDto;
+import com.example.vibetribesdemo.DTOs.UserDto;
 import com.example.vibetribesdemo.Service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

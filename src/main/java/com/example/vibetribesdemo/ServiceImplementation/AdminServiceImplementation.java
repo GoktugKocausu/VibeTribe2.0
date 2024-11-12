@@ -1,10 +1,10 @@
 package com.example.vibetribesdemo.ServiceImplementation;
 
-import com.example.vibetribesdemo.DTOs.User.UserDto;
+import com.example.vibetribesdemo.DTOs.UserDto;
 import com.example.vibetribesdemo.Service.AdminService;
 import com.example.vibetribesdemo.Utilities.Role;
 import com.example.vibetribesdemo.entities.UserEntity;
-import com.example.vibetribesdemo.Repository.User.UserRepository;
+import com.example.vibetribesdemo.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

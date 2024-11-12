@@ -1,6 +1,6 @@
 package com.example.vibetribesdemo.Security;
 
-import com.example.vibetribesdemo.Repository.User.UserRepository;
+import com.example.vibetribesdemo.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

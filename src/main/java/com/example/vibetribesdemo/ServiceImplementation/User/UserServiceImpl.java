@@ -1,7 +1,7 @@
 package com.example.vibetribesdemo.ServiceImplementation.User;
 
-import com.example.vibetribesdemo.DTOs.User.UserProfileUpdateDto;
-import com.example.vibetribesdemo.Repository.User.UserRepository;
+import com.example.vibetribesdemo.DTOs.UserProfileUpdateDto;
+import com.example.vibetribesdemo.Repository.UserRepository;
 import com.example.vibetribesdemo.Service.User.UserService;
 import com.example.vibetribesdemo.entities.UserEntity;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -24,6 +25,11 @@ public class UserServiceImpl implements UserService {
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Override
+    public Optional<UserEntity> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     @Override

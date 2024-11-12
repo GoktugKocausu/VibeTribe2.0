@@ -1,6 +1,6 @@
 package com.example.vibetribesdemo.Controller.User;
 
-import com.example.vibetribesdemo.DTOs.User.UserProfileUpdateDto;
+import com.example.vibetribesdemo.DTOs.UserProfileUpdateDto;
 import com.example.vibetribesdemo.Service.User.UserService;
 import com.example.vibetribesdemo.entities.UserEntity;
 import org.springframework.http.ResponseEntity;

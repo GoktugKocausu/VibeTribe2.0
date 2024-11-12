@@ -1,7 +1,7 @@
 package com.example.vibetribesdemo.Controller;
 
-import com.example.vibetribesdemo.DTOs.User.RegisterRequestDto;
-import com.example.vibetribesdemo.DTOs.User.LoginRequestDto;
+import com.example.vibetribesdemo.DTOs.RegisterRequestDto;
+import com.example.vibetribesdemo.DTOs.LoginRequestDto;
 import com.example.vibetribesdemo.Service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
