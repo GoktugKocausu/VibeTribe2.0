@@ -1,4 +1,4 @@
-package com.example.vibetribesdemo.DTOs.User;
+package com.example.vibetribesdemo.DTOs;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

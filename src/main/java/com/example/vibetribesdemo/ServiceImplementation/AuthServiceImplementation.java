@@ -1,10 +1,8 @@
 package com.example.vibetribesdemo.ServiceImplementation;
 
-import com.example.vibetribesdemo.DTOs.User.RegisterRequestDto;
-import com.example.vibetribesdemo.DTOs.User.LoginRequestDto;
-import com.example.vibetribesdemo.DTOs.User.RegisterRequestDto;
-import com.example.vibetribesdemo.DTOs.User.UserDto;
-import com.example.vibetribesdemo.Repository.User.UserRepository;
+import com.example.vibetribesdemo.DTOs.RegisterRequestDto;
+import com.example.vibetribesdemo.DTOs.LoginRequestDto;
+import com.example.vibetribesdemo.Repository.UserRepository;
 import com.example.vibetribesdemo.Service.AuthService;
 import com.example.vibetribesdemo.Utilities.Role;
 import com.example.vibetribesdemo.entities.UserEntity;

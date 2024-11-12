@@ -15,23 +15,24 @@ public class FriendEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "requester_id", nullable = false)
+    private UserEntity requester;
 
-    private LocalDateTime createdAt;
+    @ManyToOne
+    @JoinColumn(name = "recipient_id", nullable = false)
+    private UserEntity recipient;
 
-    private LocalDateTime respondedAt;
+    @Column(nullable = false)
+    private LocalDateTime requestDate;
 
     @Enumerated(EnumType.STRING)
-    private FriendshipStatus status;
+    @Column(nullable = false)
+    private FriendRequestStatus status;
 
-
-
-
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
+    public enum FriendRequestStatus {
+        PENDING, ACCEPTED, DECLINED
     }
-
 
 
     }
