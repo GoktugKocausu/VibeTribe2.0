@@ -79,6 +79,7 @@ public class UserEntity implements UserDetails {
     private Role role =  Role.USER_ROLE;  // Varsayılan olarak USER_ROLE ata
 
 
+
     @Override
     public int hashCode() {
         return getClass().hashCode();
