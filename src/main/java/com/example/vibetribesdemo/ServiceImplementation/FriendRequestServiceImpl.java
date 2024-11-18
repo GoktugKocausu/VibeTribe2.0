@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,6 +16,8 @@ public class FriendRequestServiceImpl implements FriendRequestService {
 
     @Autowired
     private FriendRequestRepository friendRequestRepository;
+
+
 
     @Override
     public FriendEntity sendFriendRequest(UserEntity requester, UserEntity recipient) {
@@ -31,20 +34,35 @@ public class FriendRequestServiceImpl implements FriendRequestService {
 
     @Override
     public FriendEntity acceptFriendRequest(Long requestId) {
-        // Fetch the friend request using the request ID
-        FriendEntity request = friendRequestRepository.findById(requestId)
+        FriendEntity friendRequest = friendRequestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Friend request not found"));
 
-        // request hala gonderimde mi bak
-        if (request.getStatus() != FriendEntity.FriendRequestStatus.PENDING) {
-            throw new RuntimeException("Friend request is not pending");
+        if (friendRequest.getStatus() != FriendEntity.FriendRequestStatus.PENDING) {
+            throw new IllegalStateException("Friend request is not pending");
         }
 
+        // İsteği kabul et
+        friendRequest.setStatus(FriendEntity.FriendRequestStatus.ACCEPTED);
+        friendRequestRepository.save(friendRequest);
 
-        request.setStatus(FriendEntity.FriendRequestStatus.ACCEPTED);
+        // Çift yönlü ilişki oluştur
+        createMutualFriendship(friendRequest.getRequester(), friendRequest.getRecipient());
 
+        return friendRequest;
+    }
+    private void createMutualFriendship(UserEntity user1, UserEntity user2) {
+        FriendEntity mutualFriendship = new FriendEntity();
+        mutualFriendship.setRequester(user2); // Ters ilişkiyi oluştur
+        mutualFriendship.setRecipient(user1);
+        mutualFriendship.setRequestDate(LocalDateTime.now());
+        mutualFriendship.setStatus(FriendEntity.FriendRequestStatus.ACCEPTED);
 
-        return friendRequestRepository.save(request);
+        friendRequestRepository.save(mutualFriendship);
+    }
+
+    @Override
+    public List<UserEntity> findFriends(String username) {
+        return friendRequestRepository.findFriendsByUsername(username);
     }
 
     @Override

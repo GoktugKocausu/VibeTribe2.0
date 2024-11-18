@@ -9,6 +9,8 @@ import com.example.vibetribesdemo.Service.User.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/friend-requests")
 public class FriendRequestController {
@@ -36,5 +38,10 @@ public class FriendRequestController {
     @PostMapping("/decline/{requestId}")
     public FriendEntity declineFriendRequest(@PathVariable Long requestId) {
         return friendRequestService.declineFriendRequest(requestId);
+    }
+
+    @GetMapping("/{username}/friends")
+    public List<UserEntity> getFriends(@PathVariable String username) {
+        return friendRequestService.findFriends(username);
     }
 }
