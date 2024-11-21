@@ -80,6 +80,7 @@ public class UserEntity implements UserDetails {
 
 
 
+
     @Override
     public int hashCode() {
         return getClass().hashCode();

@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -67,4 +68,10 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Failed to upload profile picture", e);
         }
     }
+
+    @Override
+    public List<UserEntity> searchUsers(String query, UserEntity currentUser) {
+        return userRepository.searchUsersWithFilters(query, currentUser.getUserId());
+    }
+
 }

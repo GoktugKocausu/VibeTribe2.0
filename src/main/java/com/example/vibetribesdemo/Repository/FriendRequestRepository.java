@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FriendRequestRepository extends JpaRepository<FriendEntity, Long> {
     List<FriendEntity> findByRecipientAndStatus(UserEntity recipient, FriendEntity.FriendRequestStatus status);
@@ -17,5 +18,8 @@ public interface FriendRequestRepository extends JpaRepository<FriendEntity, Lon
             "UNION " +
             "SELECT f.requester FROM FriendEntity f WHERE f.recipient.username = :username AND f.status = 'ACCEPTED'")
     List<UserEntity> findFriendsByUsername(@Param("username") String username);
+
+    Optional<FriendEntity> findByRequesterAndRecipient(UserEntity requester, UserEntity recipient);
+
 
 }

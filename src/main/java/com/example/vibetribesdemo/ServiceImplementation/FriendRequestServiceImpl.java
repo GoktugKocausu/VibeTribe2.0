@@ -77,4 +77,28 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     public boolean isFriendRequestPending(UserEntity requester, UserEntity recipient) {
         return friendRequestRepository.existsByRequesterAndRecipient(requester, recipient);
     }
+
+
+    @Override
+    public FriendEntity blockUser(UserEntity blocker, UserEntity blocked) {
+        // İki kullanıcı arasındaki ilişkiyi bul
+        FriendEntity friendship = friendRequestRepository.findByRequesterAndRecipient(blocker, blocked)
+                .orElseThrow(() -> new RuntimeException("Friendship not found"));
+
+        // Durumu BLOCKED olarak güncelle
+        friendship.setStatus(FriendEntity.FriendRequestStatus.BLOCKED);
+
+        // Güncellenmiş ilişkiyi kaydet
+        return friendRequestRepository.save(friendship);
+    }
+
+
+    @Override
+    public boolean isBlocked(UserEntity user1, UserEntity user2) {
+        // İki kullanıcı arasındaki engelleme durumunu kontrol et
+        return friendRequestRepository.findByRequesterAndRecipient(user1, user2)
+                .filter(friendship -> friendship.getStatus() == FriendEntity.FriendRequestStatus.BLOCKED)
+                .isPresent();
+    }
+
 }

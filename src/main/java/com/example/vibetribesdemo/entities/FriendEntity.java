@@ -31,7 +31,7 @@ public class FriendEntity {
     private FriendRequestStatus status;
 
     public enum FriendRequestStatus {
-        PENDING, ACCEPTED, DECLINED
+        PENDING, ACCEPTED, DECLINED, BLOCKED
     }
 
 

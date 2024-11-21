@@ -9,8 +9,8 @@ public class LoginRequestDto {
 
 
    private String username;
-    private String email;
+   private String email;
 
 
-    private String password;
+   private String password;
 }
