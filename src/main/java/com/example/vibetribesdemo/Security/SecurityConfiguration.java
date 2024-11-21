@@ -42,7 +42,11 @@ public class SecurityConfiguration {
                         .requestMatchers("/auth/**").permitAll()  // Allow all requests to /auth/** endpoints
                         .requestMatchers(HttpMethod.GET,"/admin/**").hasAuthority("ADMIN_ROLE")  // Restrict /admin/** endpoints to ADMIN_ROLE
                         .requestMatchers("/profile/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/profile/search/**").authenticated()
                         .requestMatchers("/api/friend-requests/**").permitAll()
+                        .requestMatchers("/api/friend-requests/block").hasRole("USER")
+                        .requestMatchers("/api/friend-requests/block").authenticated()
+
                         .requestMatchers("/api/**").permitAll()
                        // Require authentication for /profile/** endpoints
                         .anyRequest().authenticated()  // Require authentication for all other endpoints

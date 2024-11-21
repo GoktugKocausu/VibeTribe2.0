@@ -44,4 +44,29 @@ public class FriendRequestController {
     public List<UserEntity> getFriends(@PathVariable String username) {
         return friendRequestService.findFriends(username);
     }
+
+    @PostMapping("/block")
+    public FriendEntity blockUser(@RequestParam String blockerUsername, @RequestParam String blockedUsername) {
+        // Kullanıcıları username ile bul
+        UserEntity blocker = userService.findByUsername(blockerUsername)
+                .orElseThrow(() -> new RuntimeException("Blocker not found"));
+        UserEntity blocked = userService.findByUsername(blockedUsername)
+                .orElseThrow(() -> new RuntimeException("Blocked user not found"));
+
+        // Blocklama işlemini gerçekleştir
+        return friendRequestService.blockUser(blocker, blocked);
+    }
+
+    @GetMapping("/is-blocked")
+    public boolean isBlocked(@RequestParam String user1Username, @RequestParam String user2Username) {
+        // Kullanıcıları username ile bul
+        UserEntity user1 = userService.findByUsername(user1Username)
+                .orElseThrow(() -> new RuntimeException("User 1 not found"));
+        UserEntity user2 = userService.findByUsername(user2Username)
+                .orElseThrow(() -> new RuntimeException("User 2 not found"));
+
+        // Engellenme durumunu kontrol et
+        return friendRequestService.isBlocked(user1, user2);
+    }
+
 }

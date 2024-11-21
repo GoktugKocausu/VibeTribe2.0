@@ -21,4 +21,8 @@ public interface FriendRequestService {
     // Kullanıcının arkadaş listesini döndürür
     List<UserEntity> findFriends(String username);
 
+    FriendEntity blockUser(UserEntity blocker, UserEntity blocked);
+
+    boolean isBlocked(UserEntity user1, UserEntity user2);
+
 }
