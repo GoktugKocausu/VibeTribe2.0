@@ -28,9 +28,5 @@ public interface EventService {
 
     void cancelEventByAdmin(Long eventId);
 
-    void leaveEvent(Long eventId, String username);
-
-
-
 
 }

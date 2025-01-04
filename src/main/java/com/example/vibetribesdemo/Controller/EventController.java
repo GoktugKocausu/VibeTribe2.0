@@ -87,14 +87,7 @@ public class EventController {
         return ResponseEntity.ok("Successfully joined the event.");
     }
 
-    @PostMapping("/{eventId}/leave")
-    public ResponseEntity<String> leaveEvent(@PathVariable Long eventId, Principal principal) {
-        eventService.leaveEvent(eventId, principal.getName());
-        return ResponseEntity.ok("You have successfully left the event.");
-    }
-
-
-    }
+}
 
 
 

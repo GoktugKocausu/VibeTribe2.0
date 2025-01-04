@@ -10,18 +10,18 @@ import java.time.LocalDateTime;
 @Table(name = "attendance")
 @Data
 public class AttandanceEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long attendanceId; // Unique identifier for each attendance record
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", nullable = false)
     private EventEntity event;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
-
 
     @NotBlank
     private String status; // Status of attendance (e.g., RSVP’d, Attended, Cancelled)
@@ -32,5 +32,4 @@ public class AttandanceEntity {
     protected void onCreate() {
         timestamp = LocalDateTime.now(); // Set the timestamp when a new attendance record is created
     }
-
 }

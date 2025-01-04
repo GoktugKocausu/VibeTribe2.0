@@ -11,16 +11,14 @@ import com.example.vibetribesdemo.entities.EventEntity;
 import com.example.vibetribesdemo.entities.LocationEntity;
 import com.example.vibetribesdemo.entities.UserEntity;
 import com.example.vibetribesdemo.Service.EventService;
-import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+
 import java.util.stream.Collectors;
-
-
-
 
 
 
@@ -212,44 +210,6 @@ public class EventServiceImpl implements EventService {
         event.setStatus("CANCELED");
         eventRepository.save(event);
     }
-
-    @Transactional
-    public void leaveEvent(Long eventId, String username) {
-        // Fetch user by username
-        UserEntity user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Log user ID
-        System.out.println("User ID: " + user.getUserId());
-
-        // Fetch event by ID
-        EventEntity event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new RuntimeException("Event not found"));
-
-        // Log event ID
-        System.out.println("Event ID: " + event.getEventId());
-
-        // Check if the event is canceled
-        if ("CANCELED".equalsIgnoreCase(event.getStatus())) {
-            throw new IllegalArgumentException("Cannot leave a canceled event.");
-        }
-
-        // Check attendance
-        Optional<AttandanceEntity> attendance = attendanceRepository.findByEventAndUser(eventId, user.getUserId());
-        System.out.println("Attendance found: " + attendance.isPresent());
-        if (attendance.isEmpty()) {
-            throw new IllegalArgumentException("User is not a participant in this event.");
-        }
-
-        // Delete attendance record
-        attendanceRepository.deleteAttendanceByEventAndUser(event.getEventId(), user.getUserId());
-
-        // Decrease attendee count
-        event.setCurrentAttendees(event.getCurrentAttendees() - 1);
-        eventRepository.save(event);
-    }
-
-
 }
 
 
