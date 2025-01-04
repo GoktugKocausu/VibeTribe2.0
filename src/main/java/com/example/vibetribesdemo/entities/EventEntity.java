@@ -4,6 +4,7 @@ import lombok.Data;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "events")
@@ -46,9 +47,6 @@ public class EventEntity {
 
     private String moodTag; // Mood associated with the event (for filtering)
 
-    @NotNull
-    private String eventType; // Type of event (e.g., "PUBLIC", "PRIVATE")
-
     @Column(updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now(); // Timestamp when the event was created
 
@@ -63,4 +61,6 @@ public class EventEntity {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+
 }

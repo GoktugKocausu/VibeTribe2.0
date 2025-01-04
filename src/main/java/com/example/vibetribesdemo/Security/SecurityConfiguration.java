@@ -35,21 +35,33 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(withDefaults())  // Enable CORS with the configuration defined below
+                .cors(withDefaults())  // Enable CORS
                 .csrf(csrf -> csrf.disable())  // Disable CSRF protection
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()  // Allow POST requests to /auth/**
-                        .requestMatchers("/auth/**").permitAll()  // Allow all requests to /auth/** endpoints
-                        .requestMatchers(HttpMethod.GET,"/admin/**").hasAuthority("ADMIN_ROLE")  // Restrict /admin/** endpoints to ADMIN_ROLE
+                        // Allow unauthenticated access to /auth/register and /auth/login
+                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+
+                        // Restrict /admin/** to ADMIN_ROLE
+                        .requestMatchers(HttpMethod.GET, "/admin/**").hasAuthority("ADMIN_ROLE")
+                        .requestMatchers(HttpMethod.PUT, "/admin/**").hasAuthority("ADMIN_ROLE")
+
+                        // Require authentication for profile-related endpoints
                         .requestMatchers("/profile/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/profile/search/**").authenticated()
+
+                        // Friend request endpoints
                         .requestMatchers("/api/friend-requests/**").permitAll()
-                        .requestMatchers("/api/friend-requests/block").hasRole("USER")
                         .requestMatchers("/api/friend-requests/block").authenticated()
 
-                        .requestMatchers("/api/**").permitAll()
-                       // Require authentication for /profile/** endpoints
-                        .anyRequest().authenticated()  // Require authentication for all other endpoints
+                        // Allow authenticated access to other /api endpoints
+                        .requestMatchers("/api/**").authenticated()
+
+
+
+
+                        // Require authentication for all other endpoints by default
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // Use stateless session for JWT

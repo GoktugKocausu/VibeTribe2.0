@@ -3,6 +3,7 @@ package com.example.vibetribesdemo.entities;
 import lombok.Data;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,20 +23,26 @@ public class LocationEntity {
     @Size(max = 255)
     private String address; // Physical address of the location
 
+    @Size(max = 50)
+    private String city; // City where the location is
+
+    @Size(max = 50)
+    private String country; // Country of the location
+
     private Double latitude; // Latitude for mapping purposes
 
     private Double longitude; // Longitude for mapping purposes
 
     @NotBlank
+    @Size(max = 20)
     private String type; // Type of location (e.g., indoor, outdoor)
 
     @Min(0)
-    private Integer currentCapacity; // Current number of people at the location
+    private Integer currentCapacity = 0; // Default to 0
 
     @Min(1)
     private Integer maxCapacity; // Maximum capacity of the location
 
-    // Optionally, you can add timestamps for createdAt and updatedAt if needed.
     @Column(updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now(); // Timestamp when the location was created
 

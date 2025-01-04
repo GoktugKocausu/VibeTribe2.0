@@ -2,15 +2,14 @@ package com.example.vibetribesdemo.entities;
 
 import com.example.vibetribesdemo.Utilities.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import lombok.Data;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -57,8 +56,7 @@ public class UserEntity implements UserDetails {
     private LocalDateTime lastLogin;
 
     @NotNull(message = "Status cannot be null")
-    private String status; // or set an appropriate default value
-
+    private String status;
 
     @NotNull
     private String sex;
@@ -68,39 +66,41 @@ public class UserEntity implements UserDetails {
     @Size(max = 15, message = "Phone number must be at most 15 characters long")
     @NotBlank(message = "Phone number is required")
     @Pattern(
-            regexp = "^\\+[0-9]+$", // Phone number must start with '+' followed by digits
+            regexp = "^\\+[0-9]+$",
             message = "Phone number must start with '+' and contain only digits"
     )
     private String phoneNumber;
 
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role =  Role.USER_ROLE;  // Varsayılan olarak USER_ROLE ata
+    private Role role = Role.USER_ROLE;
 
-
-
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserEntity that = (UserEntity) o;
+        return userId != null && userId.equals(that.userId);
+    }
 
     @Override
     public int hashCode() {
         return getClass().hashCode();
     }
 
-
-    // Implement UserDetails methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(  this.role.name()));
-    }
-
-    @Override
-    public String getUsername() {
-        return this.username; // Return email as username
+        return List.of(new SimpleGrantedAuthority(this.role.name()));
     }
 
     @Override
     public String getPassword() {
         return passwordHash;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;
     }
 
     @Override

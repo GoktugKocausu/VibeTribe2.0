@@ -14,13 +14,14 @@ public class AttandanceEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long attendanceId; // Unique identifier for each attendance record
 
-    @ManyToOne // Relationship with User
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user; // User attending the event
-
-    @ManyToOne // Relationship with Event
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "event_id", nullable = false)
-    private EventEntity event; // Event being attended
+    private EventEntity event;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
+
 
     @NotBlank
     private String status; // Status of attendance (e.g., RSVP’d, Attended, Cancelled)

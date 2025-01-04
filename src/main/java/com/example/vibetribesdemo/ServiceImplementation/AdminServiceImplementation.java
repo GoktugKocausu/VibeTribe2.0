@@ -2,6 +2,7 @@ package com.example.vibetribesdemo.ServiceImplementation;
 
 import com.example.vibetribesdemo.DTOs.UserDto;
 import com.example.vibetribesdemo.Service.AdminService;
+import com.example.vibetribesdemo.Service.EventService;
 import com.example.vibetribesdemo.Utilities.Role;
 import com.example.vibetribesdemo.entities.UserEntity;
 import com.example.vibetribesdemo.Repository.UserRepository;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import com.example.vibetribesdemo.DTOs.EventResponseDto;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -18,10 +21,12 @@ import java.util.stream.Collectors;
 public class AdminServiceImplementation implements AdminService {
 
     private final UserRepository userRepository;
+    private final EventService eventService;
 
     @Autowired
-    public AdminServiceImplementation(UserRepository userRepository) {
+    public AdminServiceImplementation(UserRepository userRepository, EventService eventService) {
         this.userRepository = userRepository;
+        this.eventService = eventService; // Inject EventService
     }
 
     @Override
@@ -37,8 +42,6 @@ public class AdminServiceImplementation implements AdminService {
         return updateStatus(userId, "BANNED");
     }
 
-
-
     @Override
     public ResponseEntity<?> unbanUser(Long userId) {
         return updateStatus(userId, "ACTIVE");
@@ -47,7 +50,7 @@ public class AdminServiceImplementation implements AdminService {
     private ResponseEntity<?> updateStatus(Long userId, String status) {
         return userRepository.findById(userId)
                 .map(user -> {
-                    user.setStatus(status);  // Update the status
+                    user.setStatus(status);
                     userRepository.save(user);
                     return ResponseEntity.ok("User status updated to " + status);
                 })
@@ -58,24 +61,34 @@ public class AdminServiceImplementation implements AdminService {
     public ResponseEntity<?> promoteToAdmin(Long userId) {
         return userRepository.findById(userId)
                 .map(user -> {
-                    user.setRole(Role.ADMIN_ROLE);  // Set role to ADMIN_ROLE
-                    userRepository.save(user);  // Save changes
+                    user.setRole(Role.ADMIN_ROLE);
+                    userRepository.save(user);
                     return ResponseEntity.ok("User promoted to admin");
                 })
                 .orElseGet(() -> ResponseEntity.status(404).body("User not found"));
     }
 
-
-    // New method to unpromote a user to USER_ROLE
+    @Override
     public ResponseEntity<?> unpromoteToUser(Long userId) {
-        Optional<UserEntity> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
-            UserEntity user = userOptional.get();
-            user.setRole(Role.USER_ROLE); // Set role back to USER_ROLE
-            userRepository.save(user);
-            return ResponseEntity.ok("User demoted to USER_ROLE successfully.");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
-        }
+        return userRepository.findById(userId)
+                .map(user -> {
+                    user.setRole(Role.USER_ROLE);
+                    userRepository.save(user);
+                    return ResponseEntity.ok("User demoted to USER_ROLE successfully.");
+                })
+                .orElseGet(() -> ResponseEntity.status(404).body("User not found"));
+    }
+
+    // New method: Get all events
+    @Override
+    public List<EventResponseDto> getAllEvents() {
+        return eventService.getAllEvents();
+    }
+
+    // New method: Cancel an event by admin
+    @Override
+    public void cancelEventByAdmin(Long eventId) {
+        eventService.cancelEventByAdmin(eventId);
     }
 }
+

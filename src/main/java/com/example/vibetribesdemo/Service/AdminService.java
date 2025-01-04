@@ -1,5 +1,6 @@
 package com.example.vibetribesdemo.Service;
 
+import com.example.vibetribesdemo.DTOs.EventResponseDto;
 import com.example.vibetribesdemo.DTOs.UserDto;
 import org.springframework.http.ResponseEntity;
 import java.util.List;
@@ -12,6 +13,9 @@ public interface AdminService {
     ResponseEntity<?> promoteToAdmin(Long userId);
 
     ResponseEntity<?> unpromoteToUser(Long userId);
+
+    List<EventResponseDto> getAllEvents();
+    void cancelEventByAdmin(Long eventId);
 }
 
 
