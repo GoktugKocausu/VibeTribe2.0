@@ -87,6 +87,14 @@ public class EventController {
         return ResponseEntity.ok("Successfully joined the event.");
     }
 
+    @DeleteMapping("/{id}/leave")
+    public ResponseEntity<String> leaveEvent(@PathVariable Long id, Principal principal) {
+        String username = principal.getName(); // Get the username from the authenticated user
+        eventService.leaveEvent(id, username);
+        return ResponseEntity.ok("Successfully left the event.");
+    }
+
+
 }
 
 

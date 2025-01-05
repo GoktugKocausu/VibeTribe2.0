@@ -32,4 +32,19 @@ public class AttandanceEntity {
     protected void onCreate() {
         timestamp = LocalDateTime.now(); // Set the timestamp when a new attendance record is created
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AttandanceEntity that = (AttandanceEntity) o;
+        return attendanceId != null && attendanceId.equals(that.attendanceId);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+
 }

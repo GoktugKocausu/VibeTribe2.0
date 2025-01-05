@@ -12,12 +12,16 @@ import com.example.vibetribesdemo.entities.LocationEntity;
 import com.example.vibetribesdemo.entities.UserEntity;
 import com.example.vibetribesdemo.Service.EventService;
 
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -25,6 +29,8 @@ import java.util.stream.Collectors;
 @Service
 public class EventServiceImpl implements EventService {
 
+    @Autowired
+    private EntityManager entityManager;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
@@ -36,6 +42,8 @@ public class EventServiceImpl implements EventService {
         this.locationRepository = locationRepository;
         this.attendanceRepository = attendanceRepository;
     }
+
+
 
     @Override
     public EventResponseDto createEvent(EventRequestDto eventRequestDto, String username) {
@@ -162,23 +170,25 @@ public class EventServiceImpl implements EventService {
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Prevent duplicate attendance
-        boolean alreadyJoined = attendanceRepository.existsByEventAndUser(event, user);
-        if (alreadyJoined) {
+        // Check if the user already has an active attendance record
+        Optional<AttandanceEntity> attendance = attendanceRepository.findByEvent_EventIdAndUser_UserId(event.getEventId(), user.getUserId());
+        if (attendance.isPresent()) {
             throw new IllegalArgumentException("User has already joined this event.");
         }
 
         // Create a new attendance record
-        AttandanceEntity attendance = new AttandanceEntity();
-        attendance.setEvent(event);
-        attendance.setUser(user);
-        attendance.setStatus("RSVP’d");
+        AttandanceEntity newAttendance = new AttandanceEntity();
+        newAttendance.setEvent(event);
+        newAttendance.setUser(user);
+        newAttendance.setStatus("RSVP’d");
 
-        attendanceRepository.save(attendance);
+        attendanceRepository.save(newAttendance);
 
         // Increment current attendees count
         event.setCurrentAttendees(event.getCurrentAttendees() + 1);
         eventRepository.save(event);
+
+        System.out.println("User successfully joined the event.");
     }
 
 
@@ -210,6 +220,38 @@ public class EventServiceImpl implements EventService {
         event.setStatus("CANCELED");
         eventRepository.save(event);
     }
+
+    @Transactional
+    @Override
+    public void leaveEvent(Long eventId, String username) {
+        EventEntity event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Optional<AttandanceEntity> attendance = attendanceRepository.findByEvent_EventIdAndUser_UserId(event.getEventId(), user.getUserId());
+
+        if (attendance.isPresent()) {
+            AttandanceEntity attendanceEntity = attendance.get();
+            attendanceRepository.delete(attendanceEntity);
+            entityManager.flush();  // Ensures that the database state is updated immediately
+            entityManager.refresh(attendanceEntity);  // Refreshes the entity from the database to avoid session cache issues
+        } else {
+            throw new RuntimeException("User is not part of this event or has already left.");
+        }
+
+        event.setCurrentAttendees(event.getCurrentAttendees() - 1);
+        eventRepository.save(event);
+    }
+
+
+
+
+
+
+
+
 }
 
 

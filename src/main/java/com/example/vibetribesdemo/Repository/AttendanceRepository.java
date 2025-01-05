@@ -14,9 +14,9 @@ import java.util.Optional;
 public interface AttendanceRepository extends JpaRepository<AttandanceEntity, Long> {
     boolean existsByEventAndUser(EventEntity event, UserEntity user);
 
+    Optional<AttandanceEntity> findByEvent_EventIdAndUser_UserId(Long eventId, Long userId);
 
-
-
-
+    void deleteById(Long attendanceId);
 }
+
 
