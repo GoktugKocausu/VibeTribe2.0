@@ -46,8 +46,8 @@ public class UserEntity implements UserDetails {
     @Size(max = 255)
     private String bio;
 
-    @Min(0)
-    private Integer reputationPoints;
+    @Column(nullable = false)
+    private Integer reputationPoints = 0; // Initialize with 0
 
     private String preferredMood;
 

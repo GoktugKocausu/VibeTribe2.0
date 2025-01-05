@@ -46,19 +46,13 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/admin/**").hasAuthority("ADMIN_ROLE")
                         .requestMatchers(HttpMethod.PUT, "/admin/**").hasAuthority("ADMIN_ROLE")
 
-                        // Require authentication for profile-related endpoints
+                        // Require authentication for reputation endpoints
+                        .requestMatchers(HttpMethod.POST, "/api/reputation/give").authenticated() // Add this line
+                        .requestMatchers(HttpMethod.GET, "/api/reputation/total/**").permitAll() // Add this line
+
+                        // Other API endpoints
                         .requestMatchers("/profile/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/profile/search/**").authenticated()
-
-                        // Friend request endpoints
-                        .requestMatchers("/api/friend-requests/**").permitAll()
-                        .requestMatchers("/api/friend-requests/block").authenticated()
-
-                        // Allow authenticated access to other /api endpoints
                         .requestMatchers("/api/**").authenticated()
-
-
-
 
                         // Require authentication for all other endpoints by default
                         .anyRequest().authenticated()
@@ -75,12 +69,11 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }
+

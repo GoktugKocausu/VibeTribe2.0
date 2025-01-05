@@ -12,6 +12,10 @@ public class ReputationEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reputationId; // Unique identifier for each reputation record
 
+    @Min(1)
+    @Max(10)
+    private Integer points;
+
     @ManyToOne // Relationship with User
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user; // User whose reputation is being recorded

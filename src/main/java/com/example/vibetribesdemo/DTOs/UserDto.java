@@ -21,7 +21,6 @@ public class UserDto {
     private LocalDateTime lastLogin;
     private String status;
     private Integer age;
-    private Role role;  // Add role here
 
 
     public UserDto(UserEntity user) {
@@ -36,7 +35,6 @@ public class UserDto {
         this.lastLogin = user.getLastLogin();
         this.status = user.getStatus();
         this.age = user.getAge();
-        this.role = user.getRole();  // Set role from UserEntity
     }
 
 }
