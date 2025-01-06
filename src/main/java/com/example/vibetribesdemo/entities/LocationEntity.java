@@ -1,52 +1,42 @@
 package com.example.vibetribesdemo.entities;
 
-import lombok.Data;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "locations")
+@Table(name = "locations", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"latitude", "longitude"})
+})
 @Data
 public class LocationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long locationId; // Unique identifier for each location
+    private Long locationId;
 
     @NotBlank
-    @Size(max = 100)
-    private String name; // Name of the location (e.g., coffee shop)
+    @Column(length = 255)
+    private String address;
 
     @NotBlank
-    @Size(max = 255)
-    private String address; // Physical address of the location
+    @Column(length = 100)
+    private String name;
 
-    @Size(max = 50)
-    private String city; // City where the location is
+    private Double latitude;
 
-    @Size(max = 50)
-    private String country; // Country of the location
-
-    private Double latitude; // Latitude for mapping purposes
-
-    private Double longitude; // Longitude for mapping purposes
+    private Double longitude;
 
     @NotBlank
-    @Size(max = 20)
-    private String type; // Type of location (e.g., indoor, outdoor)
-
-    @Min(0)
-    private Integer currentCapacity = 0; // Default to 0
-
-    @Min(1)
-    private Integer maxCapacity; // Maximum capacity of the location
+    @Column(length = 50) // Limit type to 50 characters
+    private String type; // Add type of location (e.g., "square", "park")
 
     @Column(updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now(); // Timestamp when the location was created
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    private LocalDateTime updatedAt; // Timestamp when the location was last modified
+    private LocalDateTime updatedAt;
 
     @PrePersist
     protected void onCreate() {
@@ -58,3 +48,5 @@ public class LocationEntity {
         updatedAt = LocalDateTime.now();
     }
 }
+
+

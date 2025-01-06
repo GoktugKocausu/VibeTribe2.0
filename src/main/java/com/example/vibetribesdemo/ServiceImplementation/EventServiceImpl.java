@@ -7,6 +7,7 @@ import com.example.vibetribesdemo.Repository.EventRepository;
 import com.example.vibetribesdemo.Repository.UserRepository;
 import com.example.vibetribesdemo.Repository.LocationRepository;
 import com.example.vibetribesdemo.Service.BadgeService;
+import com.example.vibetribesdemo.Service.NominatimService;
 import com.example.vibetribesdemo.entities.AttandanceEntity;
 import com.example.vibetribesdemo.entities.EventEntity;
 import com.example.vibetribesdemo.entities.LocationEntity;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,13 +39,15 @@ public class EventServiceImpl implements EventService {
     private final LocationRepository locationRepository;
     private final AttendanceRepository attendanceRepository;
     private final BadgeService badgeService;
+    private final NominatimService nominatimService;
 
-    public EventServiceImpl(EventRepository eventRepository, UserRepository userRepository, LocationRepository locationRepository, AttendanceRepository attendanceRepository, BadgeService badgeService) {
+    public EventServiceImpl(EventRepository eventRepository, UserRepository userRepository, LocationRepository locationRepository, AttendanceRepository attendanceRepository, BadgeService badgeService, NominatimService nominatimService ) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.locationRepository = locationRepository;
         this.attendanceRepository = attendanceRepository;
         this.badgeService = badgeService;
+        this.nominatimService = nominatimService;
     }
 
 
@@ -53,23 +57,25 @@ public class EventServiceImpl implements EventService {
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        LocationEntity location = locationRepository.findById(eventRequestDto.getLocationId())
-                .orElseThrow(() -> new RuntimeException("Location not found"));
+        // Geocode the address
+        Map<String, Object> geocodeResult = nominatimService.geocode(eventRequestDto.getAddress());
+        double latitude = Double.parseDouble((String) geocodeResult.get("lat"));
+        double longitude = Double.parseDouble((String) geocodeResult.get("lon"));
+        String name = (String) geocodeResult.getOrDefault("name", eventRequestDto.getAddress());
+        String type = (String) geocodeResult.getOrDefault("type", "unknown"); // Extract type or fallback to "unknown"
 
-        // Check for overlapping events
-        boolean isOverlapping = eventRepository.existsByOverlappingTimeAndLocation(
-                location,
-                eventRequestDto.getStartTime(),
-                eventRequestDto.getEndTime()
-        );
+        Optional<LocationEntity> existingLocation = locationRepository.findByLatitudeAndLongitude(latitude, longitude);
+        LocationEntity location = existingLocation.orElseGet(() -> {
+            LocationEntity newLocation = new LocationEntity();
+            newLocation.setName(name);
+            newLocation.setAddress(eventRequestDto.getAddress());
+            newLocation.setLatitude(latitude);
+            newLocation.setLongitude(longitude);
+            newLocation.setType(type); // Set the type of the location
+            return locationRepository.save(newLocation);
+        });
 
-        if (isOverlapping) {
-            throw new IllegalArgumentException("Another event at this location overlaps with the selected time range.");
-        }
-        if (eventRequestDto.getStartTime().isAfter(eventRequestDto.getEndTime())) {
-            throw new IllegalArgumentException("Start time must be before end time.");
-        }
-
+        // Create and save the event
         EventEntity event = new EventEntity();
         event.setTitle(eventRequestDto.getTitle());
         event.setDescription(eventRequestDto.getDescription());
@@ -82,12 +88,10 @@ public class EventServiceImpl implements EventService {
 
         EventEntity savedEvent = eventRepository.save(event);
 
-        // Trigger badge awarding logic
-        badgeService.awardEventBadges(user); // ADD THIS LINE
+        badgeService.awardEventBadges(user);
 
         return mapToResponseDto(savedEvent);
     }
-
 
     @Override
     public List<EventResponseDto> getAllEvents() {
@@ -124,18 +128,28 @@ public class EventServiceImpl implements EventService {
         event.setEndTime(eventRequestDto.getEndTime());
         event.setMaxAttendees(eventRequestDto.getMaxAttendees());
 
+        // Update location if address is changed
+        if (eventRequestDto.getAddress() != null && !eventRequestDto.getAddress().equals(event.getLocation().getAddress())) {
+            Map<String, Object> geocodeResult = nominatimService.geocode(eventRequestDto.getAddress());
+            double latitude = Double.parseDouble((String) geocodeResult.get("lat"));
+            double longitude = Double.parseDouble((String) geocodeResult.get("lon"));
 
-        // Update location
-        if (eventRequestDto.getLocationId() != null) {
-            LocationEntity location = locationRepository.findById(eventRequestDto.getLocationId())
-                    .orElseThrow(() -> new RuntimeException("Location not found"));
-            event.setLocation(location); // Update the location entity
+            Optional<LocationEntity> existingLocation = locationRepository.findByLatitudeAndLongitude(latitude, longitude);
+            LocationEntity location = existingLocation.orElseGet(() -> {
+                LocationEntity newLocation = new LocationEntity();
+                newLocation.setAddress(eventRequestDto.getAddress());
+                newLocation.setLatitude(latitude);
+                newLocation.setLongitude(longitude);
+                return locationRepository.save(newLocation);
+            });
+
+            event.setLocation(location);
         }
 
         EventEntity updatedEvent = eventRepository.save(event);
-
         return mapToResponseDto(updatedEvent);
     }
+
 
     @Override
     public void cancelEvent(Long eventId, String username) {
@@ -151,11 +165,25 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventResponseDto> searchEvents(String query, Long locationId, LocalDateTime startDate, LocalDateTime endDate) {
-        return eventRepository.searchEventsWithFilters(query, locationId, startDate, endDate).stream()
+    public List<EventResponseDto> searchEvents(
+            String query,
+            String address,  // Match the updated interface
+            LocalDateTime startDate,
+            LocalDateTime endDate
+    ) {
+        // Example logic for searching events by address
+        List<EventEntity> events = eventRepository.searchEventsWithFilters(
+                query,
+                address,  // Use the address parameter for filtering
+                startDate,
+                endDate
+        );
+
+        return events.stream()
                 .map(this::mapToResponseDto)
                 .collect(Collectors.toList());
     }
+
 
 
 
@@ -206,8 +234,7 @@ public class EventServiceImpl implements EventService {
         response.setTitle(event.getTitle());
         response.setDescription(event.getDescription());
         response.setCreatedBy(event.getCreatedBy().getUsername());
-        response.setLocationName(event.getLocation().getName()); // Fetch from LocationEntity
-        response.setLocationId(event.getLocation().getLocationId());
+        response.setLocationName(event.getLocation().getAddress());
         response.setStartTime(event.getStartTime());
         response.setEndTime(event.getEndTime());
         response.setMaxAttendees(event.getMaxAttendees());
@@ -215,6 +242,7 @@ public class EventServiceImpl implements EventService {
         response.setStatus(event.getStatus());
         return response;
     }
+
 
     @Override
     public void cancelEventByAdmin(Long eventId) {

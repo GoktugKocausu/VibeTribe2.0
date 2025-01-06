@@ -23,19 +23,15 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
             @Param("endTime") LocalDateTime endTime
     );
 
-    // Find events by status
-    List<EventEntity> findByStatus(String status);
 
-    @Query("SELECT e FROM EventEntity e " +
-            "WHERE (:query IS NULL OR LOWER(e.title) LIKE LOWER(CONCAT('%', :query, '%')) " +
-            "OR LOWER(e.description) LIKE LOWER(CONCAT('%', :query, '%'))) " +
-            "AND (:locationId IS NULL OR e.location.locationId = :locationId) " +
-            "AND (:startDate IS NULL OR e.startTime >= :startDate) " +
-            "AND (:endDate IS NULL OR e.endTime <= :endDate) ")
-
+    @Query("SELECT e FROM EventEntity e WHERE " +
+            "(:query IS NULL OR LOWER(e.title) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(e.description) LIKE LOWER(CONCAT('%', :query, '%'))) AND " +
+            "(:address IS NULL OR LOWER(e.location.address) LIKE LOWER(CONCAT('%', :address, '%'))) AND " +
+            "(:startDate IS NULL OR e.startTime >= :startDate) AND " +
+            "(:endDate IS NULL OR e.endTime <= :endDate)")
     List<EventEntity> searchEventsWithFilters(
             @Param("query") String query,
-            @Param("locationId") Long locationId,
+            @Param("address") String address, // Use address instead of locationId
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate
     );

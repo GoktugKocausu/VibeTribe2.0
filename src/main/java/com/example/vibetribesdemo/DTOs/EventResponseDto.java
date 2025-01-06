@@ -9,12 +9,11 @@ public class EventResponseDto {
     private Long eventId;
     private String title;
     private String description;
-    private String createdBy; // Username of the creator
-    private String locationName; // Name of the location
-    private Long locationId;
+    private String createdBy;
+    private String locationName;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Integer maxAttendees;
     private Integer currentAttendees;
-    private String status; // ACTIVE, CANCELED, etc.
+    private String status;
 }

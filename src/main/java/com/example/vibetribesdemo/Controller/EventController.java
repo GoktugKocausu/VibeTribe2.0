@@ -22,7 +22,6 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    // Create a new event
     @PostMapping
     public ResponseEntity<EventResponseDto> createEvent(
             @RequestBody EventRequestDto eventRequestDto,
@@ -68,17 +67,18 @@ public class EventController {
         return ResponseEntity.noContent().build();
     }
 
-    // Search events
     @GetMapping("/search")
     public ResponseEntity<List<EventResponseDto>> searchEvents(
             @RequestParam(required = false) String query,
-            @RequestParam(required = false) Long locationId,
+            @RequestParam(required = false) String address,  // Match the updated method
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate
     ) {
-        List<EventResponseDto> events = eventService.searchEvents(query, locationId, startDate, endDate);
+        List<EventResponseDto> events = eventService.searchEvents(query, address, startDate, endDate);
         return ResponseEntity.ok(events);
     }
+
+
 
     @PostMapping("/{id}/join")
     public ResponseEntity<String> joinEvent(@PathVariable Long id, Principal principal) {

@@ -19,10 +19,11 @@ public interface EventService {
 
     List<EventResponseDto> searchEvents(
             String query,
-            Long locationId,
+            String address,  // Use address instead of locationId
             LocalDateTime startDate,
             LocalDateTime endDate
     );
+
 
     void joinEvent(Long eventId, String username);
 
