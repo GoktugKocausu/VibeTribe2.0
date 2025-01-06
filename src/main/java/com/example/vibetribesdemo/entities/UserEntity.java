@@ -78,6 +78,10 @@ public class UserEntity implements UserDetails {
     private String sex;
 
     private Integer age;
+    // New fields (nullable)
+    private String name;
+    private String surname;
+
 
     @Size(max = 15, message = "Phone number must be at most 15 characters long")
     @NotBlank(message = "Phone number is required")

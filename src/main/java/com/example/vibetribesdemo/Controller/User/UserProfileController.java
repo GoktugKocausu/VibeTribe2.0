@@ -3,10 +3,15 @@ package com.example.vibetribesdemo.Controller.User;
 import com.example.vibetribesdemo.DTOs.UserProfileUpdateDto;
 import com.example.vibetribesdemo.Service.User.UserService;
 import com.example.vibetribesdemo.entities.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 
 import java.util.List;
 
@@ -42,12 +47,24 @@ public class UserProfileController {
 
 
     @GetMapping("/search")
-    public List<UserEntity> searchUsers(@RequestParam String query, @RequestParam String currentUsername) {
+    public Page<UserEntity> searchUsers(
+            @RequestParam String query,
+            @RequestParam String currentUsername,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "username") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection
+    ) {
         UserEntity currentUser = userService.findByUsername(currentUsername)
                 .orElseThrow(() -> new RuntimeException("Current user not found"));
 
-        return userService.searchUsers(query, currentUser);
+        Sort sort = Sort.by(sortBy);
+        sort = "desc".equalsIgnoreCase(sortDirection) ? sort.descending() : sort.ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return userService.searchUsers(query, currentUser, pageable);
     }
+
 
     @GetMapping("/{username}/hosted-events/count")
     public ResponseEntity<Integer> getHostedEventsCount(@PathVariable String username) {

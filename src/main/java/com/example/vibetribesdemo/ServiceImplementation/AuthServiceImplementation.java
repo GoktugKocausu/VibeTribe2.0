@@ -52,6 +52,9 @@ public class AuthServiceImplementation implements AuthService {
         newUser.setSex(registerRequestDto.getSex());
         newUser.setStatus(registerRequestDto.getStatus()); // Use status from DTO
 
+        newUser.setName(registerRequestDto.getName());
+        newUser.setSurname(registerRequestDto.getSurname());
+
         newUser.setRole(Role.USER_ROLE);
 
         userRepository.save(newUser);

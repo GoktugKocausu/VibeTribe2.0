@@ -29,4 +29,7 @@ public class RegisterRequestDto {
     private String phoneNumber;
 
     private String status = "ACTIVE";
+    // New fields (nullable)
+    private String name;
+    private String surname;
 }

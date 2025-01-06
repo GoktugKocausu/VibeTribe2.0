@@ -4,9 +4,13 @@ import com.example.vibetribesdemo.DTOs.UserProfileUpdateDto;
 import com.example.vibetribesdemo.Repository.UserRepository;
 import com.example.vibetribesdemo.Service.User.UserService;
 import com.example.vibetribesdemo.entities.UserEntity;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -70,9 +74,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserEntity> searchUsers(String query, UserEntity currentUser) {
-        return userRepository.searchUsersWithFilters(query, currentUser.getUserId());
+    public Page<UserEntity> searchUsers(String query, UserEntity currentUser, Pageable pageable) {
+        return userRepository.searchUsersWithFilters(query.toLowerCase(), currentUser.getUserId(), pageable);
     }
+
 
     public int getHostedEventsCount(String username) {
         UserEntity user = userRepository.findByUsername(username)
