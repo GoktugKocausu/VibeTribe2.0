@@ -6,6 +6,7 @@ import com.example.vibetribesdemo.Repository.AttendanceRepository;
 import com.example.vibetribesdemo.Repository.EventRepository;
 import com.example.vibetribesdemo.Repository.UserRepository;
 import com.example.vibetribesdemo.Repository.LocationRepository;
+import com.example.vibetribesdemo.Service.BadgeService;
 import com.example.vibetribesdemo.entities.AttandanceEntity;
 import com.example.vibetribesdemo.entities.EventEntity;
 import com.example.vibetribesdemo.entities.LocationEntity;
@@ -35,12 +36,14 @@ public class EventServiceImpl implements EventService {
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
     private final AttendanceRepository attendanceRepository;
+    private final BadgeService badgeService;
 
-    public EventServiceImpl(EventRepository eventRepository, UserRepository userRepository, LocationRepository locationRepository, AttendanceRepository attendanceRepository) {
+    public EventServiceImpl(EventRepository eventRepository, UserRepository userRepository, LocationRepository locationRepository, AttendanceRepository attendanceRepository, BadgeService badgeService) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.locationRepository = locationRepository;
         this.attendanceRepository = attendanceRepository;
+        this.badgeService = badgeService;
     }
 
 
@@ -66,6 +69,7 @@ public class EventServiceImpl implements EventService {
         if (eventRequestDto.getStartTime().isAfter(eventRequestDto.getEndTime())) {
             throw new IllegalArgumentException("Start time must be before end time.");
         }
+
         EventEntity event = new EventEntity();
         event.setTitle(eventRequestDto.getTitle());
         event.setDescription(eventRequestDto.getDescription());
@@ -78,8 +82,12 @@ public class EventServiceImpl implements EventService {
 
         EventEntity savedEvent = eventRepository.save(event);
 
+        // Trigger badge awarding logic
+        badgeService.awardEventBadges(user); // ADD THIS LINE
+
         return mapToResponseDto(savedEvent);
     }
+
 
     @Override
     public List<EventResponseDto> getAllEvents() {

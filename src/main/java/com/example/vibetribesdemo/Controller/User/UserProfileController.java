@@ -49,4 +49,10 @@ public class UserProfileController {
         return userService.searchUsers(query, currentUser);
     }
 
+    @GetMapping("/{username}/hosted-events/count")
+    public ResponseEntity<Integer> getHostedEventsCount(@PathVariable String username) {
+        int count = userService.getHostedEventsCount(username);
+        return ResponseEntity.ok(count);
+    }
+
 }

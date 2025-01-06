@@ -50,6 +50,9 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/reputation/give").authenticated() // Add this line
                         .requestMatchers(HttpMethod.GET, "/api/reputation/total/**").permitAll() // Add this line
 
+                        .requestMatchers(HttpMethod.GET, "/api/badges/**").permitAll() // Add this line
+
+
                         // Other API endpoints
                         .requestMatchers("/profile/**").authenticated()
                         .requestMatchers("/api/**").authenticated()

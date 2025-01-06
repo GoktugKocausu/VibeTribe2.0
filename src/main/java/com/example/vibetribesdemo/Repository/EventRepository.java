@@ -48,5 +48,8 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
     List<EventEntity> findActiveEventsByLocation(@Param("locationId") Long locationId);
 
 
+    @Query("SELECT COUNT(e) FROM EventEntity e WHERE e.createdBy.username = :username")
+    int countHostedEventsByUser(@Param("username") String username);
+
 
 }

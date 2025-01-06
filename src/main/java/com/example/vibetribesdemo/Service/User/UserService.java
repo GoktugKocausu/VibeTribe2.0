@@ -13,5 +13,5 @@ public interface UserService {
     Optional<UserEntity> findByUsername(String username);
     // Search Users metodu tanımı
     List<UserEntity> searchUsers(String query, UserEntity currentUser);
-
+    int getHostedEventsCount(String username);
 }

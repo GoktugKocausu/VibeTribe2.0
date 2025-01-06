@@ -74,4 +74,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.searchUsersWithFilters(query, currentUser.getUserId());
     }
 
+    public int getHostedEventsCount(String username) {
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return user.getHostedEventsCount(); // Use the helper method from UserEntity
+    }
+
+
 }

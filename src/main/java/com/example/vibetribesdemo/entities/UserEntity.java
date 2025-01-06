@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +20,7 @@ import java.util.List;
         @UniqueConstraint(columnNames = "email")
 })
 @Data
+@ToString(exclude = "hostedEvents")
 public class UserEntity implements UserDetails {
 
     @Id
@@ -48,6 +50,20 @@ public class UserEntity implements UserDetails {
 
     @Column(nullable = false)
     private Integer reputationPoints = 0; // Initialize with 0
+
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<EventEntity> hostedEvents; // Events hosted by this user
+
+    public int getHostedEventsCount() {
+        return hostedEvents != null ? hostedEvents.size() : 0;
+    }
+
+    public int getReputationPointsCount() {
+        return reputationPoints != null ? reputationPoints : 0;
+    }
+
+
 
     private String preferredMood;
 
