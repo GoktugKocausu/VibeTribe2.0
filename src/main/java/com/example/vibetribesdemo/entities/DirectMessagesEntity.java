@@ -26,10 +26,16 @@ public class DirectMessagesEntity {
 
     private LocalDateTime timestamp; // Timestamp when the message was sent
 
-    private Boolean isRead; // Boolean indicating if the message has been read
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean isRead = false; // Default to false
 
     @NotBlank
-    private String status; // Status of the message (e.g., sent, delivered, read)
+    @Column(nullable = false, columnDefinition = "VARCHAR(10) DEFAULT 'sent'")
+    private String status = "sent"; // Default to "sent"
+
+
+
+
 
     @PrePersist
     protected void onCreate() {
